@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Cici</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f1fa;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            /* Center the video perfectly in the middle of the screen */
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- LAYER 1: FALLING BACKGROUND --- */
+        #background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; 
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            top: -10vh;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* --- LAYER 2: THE VIDEO (Tightly Fitted) --- */
+        video {
+            /* The Magic Settings:
+               Don't force it to 100%. 
+               Instead, let it calculate its own size (auto), 
+               but forbid it from exceeding the screen edges (max-).
+            */
+            width: auto;
+            height: auto;
+            max-width: 94vw;  /* Leave 3% gap on sides */
+            max-height: 94vh; /* Leave 3% gap top/bottom */
+            
+            z-index: 10;
+            border-radius: 15px; 
+            /* This shadow will now hug the video frame exactly */
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.5); 
+            display: block;
+        }
+
+        /* --- LAYER 3: START OVERLAY --- */
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffb7c5;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .start-btn {
+            padding: 18px 50px;
+            font-size: 1.8rem;
+            font-family: 'Dancing Script', cursive;
+            background: white;
+            color: #ff6b81;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="background-layer"></div>
+
+    <video id="myVideo" playsinline>
+        <source src="birthday_video.mp4" type="video/mp4">
+    </video>
+
+    <div id="overlay">
+        <button class="start-btn" onclick="startExperience()">Tap to Open Gift 🎁</button>
+    </div>
+
+    <script>
+        function startExperience() {
+            var video = document.getElementById("myVideo");
+            var overlay = document.getElementById("overlay");
+
+            overlay.style.opacity = '0';
+            setTimeout(function() {
+                overlay.style.display = 'none';
+                
+                video.muted = false;
+                video.play();
+                startConfetti();
+            }, 500);
+        }
+
+        function startConfetti() {
+            const container = document.getElementById('background-layer');
+            const colors = ['#ffc0cb', '#ff69b4', '#ffd700', '#87ceeb'];
+            const floatingEmojis = ['🎈', '💖', '✨', '🌸'];
+
+            for (let i = 0; i < 40; i++) {
+                const div = document.createElement('div');
+                div.classList.add('confetti');
+                
+                const isEmoji = Math.random() > 0.6; 
+                if (isEmoji) {
+                    div.innerText = floatingEmojis[Math.floor(Math.random() * floatingEmojis.length)];
+                    div.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                } else {
+                    div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    div.style.width = (Math.random() * 8 + 4) + 'px';
+                    div.style.height = (Math.random() * 8 + 4) + 'px';
+                }
+
+                div.style.left = Math.random() * 100 + 'vw';
+                div.style.animationDuration = (Math.random() * 4 + 3) + 's'; 
+                div.style.animationDelay = (Math.random() * 5) + 's';
+
+                container.appendChild(div);
+            }
+        }
+    </script>
+</body>
+</html>
